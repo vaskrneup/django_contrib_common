@@ -98,11 +98,12 @@ class AbstractBaseModel(models.Model):
         fields = fields if fields is not None else self.get_fields()
         if _exclude := self.get_excluded_fields() is not None:
             exclude = {*_exclude, exclude}
-        for field in exclude:
-            try:
-                del fields[field]
-            except KeyError:
-                pass
+        if exclude:
+            for field in exclude:
+                try:
+                    del fields[field]
+                except KeyError:
+                    pass
 
         return {
             frontend_field: utils.get_attr(self, fields[frontend_field])
