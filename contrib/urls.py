@@ -16,11 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import path
+from common.forms import TestForm
 
 
 def test(request):
-    print(request.data)
-    print(request.POST)
+    x = TestForm(request.data)
+    print(x.get_errors())
+    # x.set_field_attr(["apple", "ball"], "required", False)
+    # print(request.data)
+    # print(request.POST)
+    # print(x.errors)
     return JsonResponse({})
 
 
