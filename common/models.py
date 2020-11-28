@@ -111,6 +111,7 @@ class AbstractBaseModel(models.Model):
 
 
 class AbstractBaseUUIDModel(AbstractBaseModel):
+    """Model with all functionality and fields from AbstractModel but pk datatype changed to `uuid`."""
     id = models.UUIDField(
         verbose_name=__("Primary Key with unique identifiers."),
         help_text=__(
@@ -131,6 +132,7 @@ class AbstractBaseUUIDModel(AbstractBaseModel):
 
 
 class AbstractBaseSlugModel(AbstractBaseModel):
+    """Model with all functionality and fields from AbstractModel with addition of `slug`."""
     SLUG_FROM_FIELD = None
 
     slug = models.SlugField(
@@ -144,13 +146,33 @@ class AbstractBaseSlugModel(AbstractBaseModel):
 
     def get_slug_value(self):
         """will be used internally to get slug value, override this to return any slug value you wish."""
-        assert (
-            self.SLUG_FROM_FIELD is not None,
-            "Either set a constant ``SLUG_FROM_FIELD``, or override ``get_slug_value``, or set value for slug before calling save()"
-        )
+        assert self.SLUG_FROM_FIELD is not None, "Either set a constant ``SLUG_FROM_FIELD``, or override ``get_slug_value``, or set value for slug before calling save()"
+
         return slugify(str(utils.get_attr(self, self.SLUG_FROM_FIELD)) + "-" + secrets.token_hex(7))
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self.get_slug_value()
         super().save(*args, **kwargs)
+
+
+class AbstractBaseSlugUUIDModel(AbstractBaseSlugModel):
+    """Model with all functionality and fields from AbstractModel with addition of `slug` and pk is changed to 'UUID type'."""
+
+    id = models.UUIDField(
+        verbose_name=__("Primary Key with unique identifiers."),
+        help_text=__(
+            "Generates unique identifiers everytime a new object is created."
+        ),
+        primary_key=True,
+        unique=True,
+        auto_created=True,
+        default=uuid.uuid4,
+        editable=False,
+        error_messages={
+            "invalid": __("Please provide a valid name.")
+        }
+    )
+
+    class Meta:
+        abstract = True
