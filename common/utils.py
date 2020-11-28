@@ -9,6 +9,7 @@ def get_attr(obj, field: str, default_return: any = None, raise_error: bool = Fa
     :param kwargs: additional keywords arguments accepted by `obj.field` if it is callable
     :return: `obj.field` if it exists or `default_return`
     """
+    _ = obj  # Just so that pycharm stops yelling !!
     try:
         out = eval(f"obj.{field}")
         if callable(out):
