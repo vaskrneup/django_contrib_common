@@ -18,13 +18,13 @@ class JsonModelForm(forms.ModelForm):
     def post_init(self):
         """override this for doing something after init !!"""
 
-    def get_errors_format_json(self):
+    def get_errors_format_json(self) -> dict:
         return self.errors.as_json()
 
     def get_errors(self, format_="json"):
         """
-            Returns Error data in JSON format !!
-            :param format_: which format to use when returning data !!
+        Returns Error data in JSON format !!
+        :param format_: which format to use when returning data !!
         """
         return getattr(self, f"get_errors_format_{format_}")()
 
