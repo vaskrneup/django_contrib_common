@@ -26,7 +26,7 @@ class ResponseManager:
         else:
             user_data = {}
 
-        self.response = {
+        self.__response = {
             # message and error handling !!
             "messages": messages,  # For ``non-form field`` related errors.
             "field_errors": {},  # For ``form field`` related errors.
@@ -39,6 +39,15 @@ class ResponseManager:
             **additional_response_data,
         }
 
+    def add_data(self, **data):
+        """
+        Adds data from keywords provided.
+
+        :param data: any number of keywords to add to response
+        :return: None
+        """
+        self.__response = {**self.__response, **data}
+
     # For handling db query related !!
     def add_list_view_data(self, response_field_name: str, objects: list, fields: dict):
         """Loops through all the objects and grabs data from fields and appends to list, then add data as provided response_field_name.
@@ -48,7 +57,7 @@ class ResponseManager:
         @param fields: fields or callable, will be passed to serializer.
         @return: None
         """
-        self.response[response_field_name] = [obj.serialize(fields=fields) for obj in objects]  # NOQA
+        self.__response[response_field_name] = [obj.serialize(fields=fields) for obj in objects]  # NOQA
 
     def add_db_data(self, response_field_name: str, object_, fields: dict):
         """Adds object serialized data to ``response_field_name``
@@ -58,7 +67,7 @@ class ResponseManager:
         :param fields: fields to be included in the response data
         :return: None
         """
-        self.response[response_field_name] = object_.serialize(fields=fields)
+        self.__response[response_field_name] = object_.serialize(fields=fields)
 
     def add_paginator_data(self, paginator=None, page=None):
         """Provides support for paginator, auto adds data  !!
@@ -68,28 +77,28 @@ class ResponseManager:
         @return: None
         """
         if paginator:
-            self.response["pagination"]["total_results"] = paginator.count
+            self.__response["pagination"]["total_results"] = paginator.count
 
         if page:
             if page.has_next():
-                self.response["pagination"]["has_next_page"] = True  # NOQA
-                self.response["pagination"]["next_page_number"] = page.next_page_number()
+                self.__response["pagination"]["has_next_page"] = True  # NOQA
+                self.__response["pagination"]["next_page_number"] = page.next_page_number()
             else:
-                self.response["pagination"]["has_next_page"] = False  # NOQA
+                self.__response["pagination"]["has_next_page"] = False  # NOQA
 
             if page.has_previous():
-                self.response["pagination"]["has_previous_page"] = True  # NOQA
-                self.response["pagination"]["previous_page_number"] = page.previous_page_number()
+                self.__response["pagination"]["has_previous_page"] = True  # NOQA
+                self.__response["pagination"]["previous_page_number"] = page.previous_page_number()
             else:
-                self.response["pagination"]["has_previous_page"] = False  # NOQA
+                self.__response["pagination"]["has_previous_page"] = False  # NOQA
 
-        self.response["has_pagination_data"] = True
+        self.__response["has_pagination_data"] = True
 
     # For handling messages && notification related stuff.
     def __add_message(self, title, message, type_):
         """Internally used for adding message to response data"""
         try:
-            self.response["messages"][type_].append({"title": title, "message": message, "type": type_})
+            self.__response["messages"][type_].append({"title": title, "message": message, "type": type_})
         except KeyError:
             raise ValueError(f"support for message type ``{type_}`` not available.")
 
@@ -111,14 +120,14 @@ class ResponseManager:
 
     def add_form_errors(self, form: (JsonModelForm, dict)):
         """Adds field error from ``JsonModelForm`` or provided dict."""
-        self.response["field_errors"] = form if type(form) is dict else form.get_errors()
-        return self.response["field_errors"]
+        self.__response["field_errors"] = form if type(form) is dict else form.get_errors()
+        return self.__response["field_errors"]
 
     def has_errors(self, include_field_errors=False):
         """Checks if there is error in response data."""
         if (include_field_errors and (
-                self.response["messages"]["error"] or self.response["field_errors"]
-        )) or self.response["messages"]["error"]:
+                self.__response["messages"]["error"] or self.__response["field_errors"]
+        )) or self.__response["messages"]["error"]:
             return True
         else:
             return False
@@ -128,10 +137,10 @@ class ResponseManager:
         if self.append_user_data:
             # for user related jobs !!
             is_logged_in = self.request.user.is_authenticated
-            self.response["is_logged_in"] = is_logged_in
+            self.__response["is_logged_in"] = is_logged_in
 
             if is_logged_in:
-                self.response["is_superuser"] = self.request.user.is_superuser
+                self.__response["is_superuser"] = self.request.user.is_superuser
 
     def compile(self, raw, *args, **kwargs):
         """
@@ -143,8 +152,8 @@ class ResponseManager:
         :return: `dict` of response data or JsonResponse object
         """
         self.__add_user_data()
-        self.response["has_errors"] = self.has_errors()
-        return self.response if raw else JsonResponse(self.response, *args, **kwargs)
+        self.__response["has_errors"] = self.has_errors()
+        return self.__response if raw else JsonResponse(self.__response, *args, **kwargs)
 
     def __call__(self, raw=False, *args, **kwargs) -> (dict, JsonResponse):
         """
@@ -160,7 +169,7 @@ class ResponseManager:
 
     # For additional Functionality !!
     def __setitem__(self, key, value):
-        self.response[key] = value
+        self.__response[key] = value
 
     def __getitem__(self, item):
-        return self.response[item]
+        return self.__response[item]
