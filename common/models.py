@@ -85,7 +85,13 @@ class AbstractBaseModel(models.Model):
         fields = self._meta.get_fields(include_parents, include_hidden)
         return fields if as_list else {key: key for key in fields}
 
-    def serialize(self, fields: dict = None, exclude: iter = None) -> dict:
+    def serialize_json(self, fields):
+        return {
+            frontend_field: utils.get_attr(self, fields[frontend_field])
+            for frontend_field in fields
+        }
+
+    def serialize(self, fields: dict = None, exclude: iter = None, format_: str = "json") -> dict:
         """Provides json data depending on the fields provided.
 
         ** fields must be of type dict, mapping frontend required fields with backend model callable or property **
@@ -93,6 +99,7 @@ class AbstractBaseModel(models.Model):
         :param fields: `dict of fields` or `callable` to include,
                        where key is frontend field name and value is `model property` or `callable`
         :param exclude: set of fields in model to exclude
+        :param format_: format in which the data must be returned
         :return: obj data in json format
         """
         fields = fields if fields is not None else self.get_fields()
@@ -105,10 +112,7 @@ class AbstractBaseModel(models.Model):
                 except KeyError:
                     pass
 
-        return {
-            frontend_field: utils.get_attr(self, fields[frontend_field])
-            for frontend_field in fields
-        }
+        return getattr(self, f"serialize_{format_}")(fields)
 
 
 class AbstractBaseUUIDModel(AbstractBaseModel):
