@@ -5,6 +5,9 @@ from common.forms import JsonModelForm
 class ResponseManager:
     def __init__(self, request: HttpRequest = None, messages: list = None,
                  append_user_data: bool = False, **additional_response_data):
+        if append_user_data and request is None:
+            raise ValueError("make sure you provide `request` or set `append_user_data` to `False`")
+
         self.append_user_data = append_user_data  # If set True then user data is added, if set `True` additional db query must be made.
         self.messages = messages or {
             "error": [],  # Error message, will be displayed in red.
