@@ -2,7 +2,7 @@
 
 ### The app contains models following models for making development easier
 
-* #### `AbstractBaseModel` same as django's default `django.db.models.Model` but contains additional methods and fields.
+* ### `AbstractBaseModel` same as django's default `django.db.models.Model` but contains additional methods and fields.
     * ##### field `creation_date`: Stores creation date of the object.
     * ##### field `update_date`: Stores last update date of the object.
     * ##### method `set_request`: Sets request object in model so that it used be used internally or by inherited models. Request object is stored in `_request` which can be accessed through `get_request()`.
