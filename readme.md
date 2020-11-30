@@ -22,7 +22,7 @@
     * #### `AbstractBaseSlugModel` contains all features of `AbstractBaseModel` in addition `slug field` is added.
         * **constant field `SLUG_FROM_FIELD`: field provided will be used for creating `slug by default`, random hex value will be appended at the end.**
         * **field `slug`: stores slug for the object, will be auto generated if not set using `SLUG_FROM_FIELD` value.**
-        * **field `get_slug_value`: is used internally to get slug value, override this if you wish to change how `slug` is formed. `Slug must be unique`**
+        * **method `get_slug_value` || `get_slug_value(self)`: is used internally to get slug value, override this if you wish to change how `slug` is formed. `Slug must be unique`**
     
     * #### `AbstractBaseSlugUUIDModel` contains all features of `AbstractBaseModel`, `AbstractBaseUUIDModel` and `AbstractBaseSlugModel`.
 
