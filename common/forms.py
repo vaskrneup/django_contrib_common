@@ -7,10 +7,24 @@ class JsonModelForm(forms.ModelForm):
     """Form for managing Json requests"""
 
     def __init__(self, *args, request=None, **kwargs):
-        self.request = request
+        self._request = request
         self.pre_init()
         super().__init__(*args, **kwargs)
         self.post_init()
+
+    def get_request(self):
+        """Gets the request object. If not set ValueError will be raised."""
+        if self._request is None:
+            raise ValueError(
+                "either pass `request` as keyword argument "
+                "when initializing the form or use `set_request` to set request"
+            )
+
+        return self._request
+
+    def set_request(self, request):
+        """Sets the request object."""
+        self._request = request
 
     def pre_init(self):
         """override this for doing something before init !!"""
