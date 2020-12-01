@@ -32,9 +32,10 @@ def user_passes_test(test, failed_return_value: dict):
 
 
 # TODO: "Change hardcoded message."
-def login_required(message=None):
+def login_required(message="Please Make sure you are logged in.", title="Not Logged In"):
     """Check if the user is logged in or not, if not then return `JsonResponse` with `message` else return `decorated function`.
 
+    :param title:
     :param message: Message to be sent if user is not logged in, if not provided then default message(LOGIN_REQUIRED_MESSAGE) will be used.
     :return: Decorator or JsonResponse
     """
@@ -46,7 +47,7 @@ def login_required(message=None):
                 return function(request, *args, **kwargs)
             else:
                 res = ResponseManager()
-                res.add_warning_message(title="Not Logged In", message="Please Make sure you are logged in.")
+                res.add_warning_message(title=title, message=message)
                 return res()
 
         return __wrapper
@@ -54,9 +55,10 @@ def login_required(message=None):
     return decorator_function
 
 
-def logout_required(message=None):
+def logout_required(message="Please logout before accessing this page.", title="Already Logged In"):
     """Check if the user is logged in or not, if not then return `JsonResponse` with `message` else return `decorated function`.
 
+    :param title:
     :param message: Message to be sent if user is not logged in, if not provided then default message(LOGOUT_REQUIRED_MESSAGE) will be used.
     :return: Decorator or JsonResponse
     """
@@ -66,7 +68,7 @@ def logout_required(message=None):
         def __wrapper(request, *args, **kwargs):
             if request.user.is_authenticated:
                 res = ResponseManager()
-                res.add_warning_message(title="Already Logged In", message="Please logout before accessing this page.")
+                res.add_warning_message(title=title, message=message)
                 return res()
             else:
                 return function(request, *args, **kwargs)
@@ -77,11 +79,13 @@ def logout_required(message=None):
 
 
 # Request related !!
-def allow_ajax_only(message=None):
+def allow_ajax_only(message="Request to this page is forbidden, please make sure you use authentic app.",
+                    title="Not Allowed"):
     """Check if the request is ajax or not, if not then return `JsonResponse` with `message` else return `decorated function`.
 
-    @param message: Message to be sent if request is not ajax, if not provided then default message(ALLOW_AJAX_ONLY_MESSAGE) will be used.
-    @return: Decorator or JsonResponse
+    :param title:
+    :param message: Message to be sent if request is not ajax, if not provided then default message(ALLOW_AJAX_ONLY_MESSAGE) will be used.
+    :return: Decorator or JsonResponse
     """
 
     def decorator(function):
@@ -90,8 +94,8 @@ def allow_ajax_only(message=None):
             if not request.is_ajax():
                 res = ResponseManager()
                 res.add_warning_message(
-                    title="Not Allowed",
-                    message="Request to this page is forbidden, please make sure you use authentic app."
+                    title=title,
+                    message=message
                 )
                 return res()
 
@@ -102,14 +106,16 @@ def allow_ajax_only(message=None):
     return decorator
 
 
-def allowed_methods(methods=None, message=None):
+def allowed_methods(methods=None, message=None, title="Method Not Allowed"):
     """Check if the request is ajax or not, if not then return `JsonResponse` with `message` else return `decorated function`.
 
-    @param methods: List of allowed methods, if not provided default(["GET", "POST"]) will be used.
-    @param message: Message to be sent if request is not in provided methods, if not provided then default message(ALLOWED_METHOD_MESSAGE) will be used.
-    @return: Decorator or JsonResponse
+    :param title:
+    :param methods: List of allowed methods, if not provided default(["GET", "POST"]) will be used.
+    :param message: Message to be sent if request is not in provided methods, if not provided then default message(ALLOWED_METHOD_MESSAGE) will be used.
+    :return: Decorator or JsonResponse
     """
     methods = methods or ["GET", "POST"]
+    message = message if message else f"""Available Methods are "{', '.join(methods)}" only"""
 
     def decorator_function(function):
         @wraps(function)
@@ -119,8 +125,8 @@ def allowed_methods(methods=None, message=None):
             else:
                 res = ResponseManager()
                 res.add_warning_message(
-                    title="Method Not Allowed",
-                    message=f"""Available Methods are "{', '.join(methods)}" only"""
+                    title=title,
+                    message=message
                 )
                 return res()
 
