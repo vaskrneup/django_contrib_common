@@ -1,12 +1,16 @@
 from django.http import JsonResponse, HttpRequest
+
 from common.forms import JsonModelForm
+from common import exceptions
 
 
 class ResponseManager:
     def __init__(self, request: HttpRequest = None, messages: list = None,
                  append_user_data: bool = False, **additional_response_data):
         if append_user_data and request is None:
-            raise ValueError("make sure you provide `request` or set `append_user_data` to `False`")
+            raise exceptions.DependentVariableNotProvided(
+                "make sure you provide `request` or set `append_user_data` to `False`"
+            )
 
         self.append_user_data = append_user_data  # If set True then user data is added, if set `True` additional db query must be made.
         self.messages = messages or {
@@ -100,7 +104,7 @@ class ResponseManager:
         try:
             self.__response["messages"][type_].append({"title": title, "message": message, "type": type_})
         except KeyError:
-            raise ValueError(f"support for message type ``{type_}`` not available.")
+            raise exceptions.NotSupported(f"support for message type ``{type_}`` not available.")
 
     def add_error_message(self, title, message):
         """For adding error message to response data."""
