@@ -57,8 +57,8 @@ class JsonModelForm(forms.ModelForm):
         """Makes `fields` required."""
         self.set_field_attr(fields, "required", True)
 
-
-class TestForm(JsonModelForm):
-    class Meta:
-        model = TestModel
-        fields = "__all__"
+#
+# class TestForm(JsonModelForm):
+#     class Meta:
+#         model = TestModel
+#         fields = "__all__"

@@ -182,6 +182,6 @@ class AbstractBaseSlugUUIDModel(AbstractBaseSlugModel):
     class Meta:
         abstract = True
 
-
-class TestModel(AbstractBaseSlugUUIDModel):
-    pass
+#
+# class TestModel(AbstractBaseSlugUUIDModel):
+#     pass
