@@ -13,12 +13,6 @@ class ResponseManager:
             )
 
         self.append_user_data = append_user_data  # If set True then user data is added, if set `True` additional db query must be made.
-        self.messages = messages or {
-            "error": [],  # Error message, will be displayed in red.
-            "info": [],  # Info message, will be displayed in blue.
-            "success": [],  # Success Message, will be displayed in green.
-            "warning": []  # Warning Message, will be displayed in yellow.
-        }  # list of messages to be send in frontend.
         self.request = request  # For evaluating current user condition.
 
         if append_user_data:
@@ -32,7 +26,12 @@ class ResponseManager:
 
         self.__response = {
             # message and error handling !!
-            "messages": messages,  # For ``non-form field`` related errors.
+            "messages": messages or {  # For ``non-form field`` related errors.
+                "error": [],  # Error message, will be displayed in red.
+                "info": [],  # Info message, will be displayed in blue.
+                "success": [],  # Success Message, will be displayed in green.
+                "warning": []  # Warning Message, will be displayed in yellow.
+            },  # list of messages to be send in frontend.
             "field_errors": {},  # For ``form field`` related errors.
             "has_errors": False,  # For Knowing if the response contains any error.
 

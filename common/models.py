@@ -144,6 +144,7 @@ class AbstractBaseSlugModel(AbstractBaseModel):
         verbose_name=__("Slug"),
         help_text=__("For Better representation in url"),
         unique=True,
+        blank=True
     )
 
     class Meta:

@@ -1,7 +1,5 @@
 from django import forms
 
-from common.models import TestModel
-
 
 class JsonModelForm(forms.ModelForm):
     """Form for managing Json requests"""
