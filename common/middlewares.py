@@ -8,7 +8,7 @@ class JsonToPOSTMiddleware:
     def __call__(self, request):
         request.data = None
 
-        if request.method == "POST":
+        if request.method == "POST" and not request.FILES:
             try:
                 request.data = json.loads(request.body)
                 if csrf_token := request.data.get("csrfmiddlewaretoken"):

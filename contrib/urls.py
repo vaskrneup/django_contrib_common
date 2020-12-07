@@ -14,22 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.http import JsonResponse
 from django.urls import path
-from common.forms import TestForm
 
 
-def test(request):
-    x = TestForm(request.data)
-    print(x.get_errors())
-    # x.set_field_attr(["apple", "ball"], "required", False)
-    # print(request.data)
-    # print(request.POST)
-    # print(x.errors)
-    return JsonResponse({})
-
+# def test(request):
+#     print(x.get_errors())
+#     # x.set_field_attr(["apple", "ball"], "required", False)
+#     # print(request.data)
+#     # print(request.POST)
+#     # print(x.errors)
+#     return JsonResponse({})
+#
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', test),
 ]
