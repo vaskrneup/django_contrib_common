@@ -2,11 +2,14 @@ from django.db import models
 from django.utils.text import gettext_lazy as __, slugify
 from django.contrib.humanize.templatetags import humanize
 from django.http.request import HttpRequest
+from django.contrib.auth.models import AbstractUser
 
 import uuid
 import secrets
 
 from . import utils
+from . import validators
+from .constants import COUNTRY_CODE
 
 
 class AbstractBaseModel(models.Model):
@@ -183,6 +186,60 @@ class AbstractBaseSlugUUIDModel(AbstractBaseSlugModel):
     class Meta:
         abstract = True
 
-#
-# class TestModel(AbstractBaseSlugUUIDModel):
+
+class AbstractCommonUser(AbstractUser):
+    DEFAULT_PROFILE_PICTURE_PATH = "common/static/common/default/default.jpg"
+    PROFILE_PICTURE_UPLOAD_PATH = "media/profile_picture/"
+
+    username_validator = validators.WordNumberLetterUnderscoreAndDotOnlyValidator()
+    phonenumber_validator = validators.InternationalPhoneNumberValidator()
+
+    username = models.CharField(
+        verbose_name=__('username'),
+        max_length=150,
+        unique=True,
+        help_text=__(
+            'Enter a valid username. This value may contain only letters, '
+            'numbers, and (_, .) characters.'
+        ),
+        validators=[username_validator],
+        error_messages={
+            'unique': __("A user with that username already exists."),
+        },
+    )
+    phone_number = models.CharField(
+        verbose_name=__("Phone Number"),
+        max_length=15,
+        unique=True,
+        help_text=__(
+            "Enter a valid number in international or national format."
+        ),
+        validators=[phonenumber_validator],
+        error_messages={
+            'unique': __("A user with that phone number already exists."),
+        },
+    )
+
+    profile_picture = models.ImageField(
+        verbose_name=__("Profile Picture"),
+        help_text=__(
+            "Profile Picture of the user"
+        ),
+        default=DEFAULT_PROFILE_PICTURE_PATH,
+        upload_to=PROFILE_PICTURE_UPLOAD_PATH
+    )
+
+    country = models.CharField(
+        verbose_name=__("Country"),
+        help_text=__("Country of residence."),
+        max_length=3,
+        blank=True,
+        null=True,
+        choices=COUNTRY_CODE
+    )
+
+    class Meta:
+        abstract = True
+
+# class TestModel(AbstractCommonUser):
 #     pass

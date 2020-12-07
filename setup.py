@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='django_common_api',  # How you named your package folder (MyLib)
     packages=['common'],  # Chose the same as "name"
-    version='1.1',  # Start with a small number and increase it with every change you make
+    version='1.2.0',  # Start with a small number and increase it with every change you make
     license='MIT',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description='App for better API management.',  # Give a short description about your library
     author='Bhaskar Neupane',  # Type in your name
