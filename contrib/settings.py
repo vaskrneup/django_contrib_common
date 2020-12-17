@@ -36,14 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'common.apps.CommonConfig',
+    'common_api.apps.CommonApiConfig',
 ]
 
 MIDDLEWARE = [
-    'common.middlewares.JsonToPOSTMiddleware',
+    'common_api.middlewares.JsonToPOSTMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # 'django.contrib.sessions.middleware.SessionMiddleware',
-    'common.middlewares.JsonSessionMiddleware',
+    'common_api.middlewares.JsonSessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

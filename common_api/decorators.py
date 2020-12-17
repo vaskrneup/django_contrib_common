@@ -2,7 +2,7 @@ from django.http import JsonResponse
 
 from functools import wraps
 
-from common.http import ResponseManager
+from common_api.http import ResponseManager
 
 
 # User related !!

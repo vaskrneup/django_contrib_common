@@ -7,8 +7,8 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 import secrets
 
-from . import utils
-from . import validators
+from common import utils
+from common import validators
 from .constants import COUNTRY_CODE
 
 
@@ -188,7 +188,7 @@ class AbstractBaseSlugUUIDModel(AbstractBaseSlugModel):
 
 
 class AbstractCommonUser(AbstractUser):
-    DEFAULT_PROFILE_PICTURE_PATH = "common/static/common/default/default.jpg"
+    DEFAULT_PROFILE_PICTURE_PATH = "common_api/static/common_api/default/default.jpg"
     PROFILE_PICTURE_UPLOAD_PATH = "media/profile_picture/"
 
     username_validator = validators.WordNumberLetterUnderscoreAndDotOnlyValidator()

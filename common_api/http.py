@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpRequest
 
-from common.forms import JsonModelForm
-from common import exceptions
+from common_api.forms import JsonModelForm
+from common_api import exceptions
 
 
 class ResponseManager:

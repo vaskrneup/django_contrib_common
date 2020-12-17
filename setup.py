@@ -1,5 +1,5 @@
 from distutils.core import setup
-from common import VERSION
+from common_api import VERSION
 
 setup(
     name='django_common_api',  # How you named your package folder (MyLib)
