@@ -18,14 +18,16 @@ from django.urls import path
 
 
 # def test(request):
-#     print(x.get_errors())
+#     from django.http import JsonResponse
 #     # x.set_field_attr(["apple", "ball"], "required", False)
 #     # print(request.data)
 #     # print(request.POST)
 #     # print(x.errors)
+#     print(request.user)
 #     return JsonResponse({})
 #
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('test/', test)
 ]

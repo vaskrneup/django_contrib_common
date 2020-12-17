@@ -1,4 +1,16 @@
 import json
+from django.conf import settings
+from django.contrib.sessions.middleware import SessionMiddleware
+
+
+class JsonSessionMiddleware(SessionMiddleware):
+    def process_request(self, request):
+        session_key = request.COOKIES.get(
+            settings.SESSION_COOKIE_NAME
+        ) or request.data.get(
+            settings.SESSION_COOKIE_NAME
+        )
+        request.session = self.SessionStore(session_key)
 
 
 class JsonToPOSTMiddleware:
@@ -6,12 +18,11 @@ class JsonToPOSTMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        request.data = None
-        _body = request.body
+        request.data = {}
 
-        if request.method == "POST" and not request.FILES:
+        if request.META.get("CONTENT_TYPE") == "application/json":
             try:
-                request.data = json.loads(_body)
+                request.data = json.loads(request.body)
                 if csrf_token := request.data.get("csrfmiddlewaretoken"):
                     request.POST = request.POST.copy()
                     request.POST["csrfmiddlewaretoken"] = csrf_token
